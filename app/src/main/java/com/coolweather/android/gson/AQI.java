@@ -2,7 +2,7 @@ package com.coolweather.android.gson;
 
 public class AQI {
 
-    public AQICity aqiCity;
+    public AQICity city;
 
     public class AQICity {
 
