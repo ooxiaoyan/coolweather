@@ -10,6 +10,19 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    flavorDimensions "default"
+
+    productFlavors {
+        baidu {
+            applicationId "com.coolweather.android.baidu"
+        }
+
+        qihoo {
+            applicationId "com.coolweather.android.qihoo"
+        }
+    }
+
     signingConfigs {
         config {
             storeFile file(KEY_PATH)
@@ -18,6 +31,7 @@ android {
             keyPassword ALIAS_PASS
         }
     }
+
     buildTypes {
         release {
             minifyEnabled false
