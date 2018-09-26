@@ -1,5 +1,6 @@
 package com.coolweather.android;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -233,4 +234,12 @@ public class WeatherActivity extends BaseActivity {
         startService(intent);
     }
 
+    /**
+     * 启动活动
+     * @param context
+     */
+    public static void actionStart(Context context) {
+        Intent intent = new Intent(context, WeatherActivity.class);
+        context.startActivity(intent);
+    }
 }
