@@ -31,6 +31,7 @@ import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -105,12 +106,6 @@ public class WeatherActivity extends AppCompatActivity {
                 requestWeather(mWeatherId);
             }
         });
-        navButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawerLayout.openDrawer(GravityCompat.START);
-            }
-        });
 
         String bingPic = prefs.getString("bing_pic", null);
         if (bingPic != null) {
@@ -118,6 +113,11 @@ public class WeatherActivity extends AppCompatActivity {
         } else {
             loadBingPic(DataSource.BING_PIC);
         }
+    }
+
+    @OnClick(R.id.nav_button)
+    public void onNavButtonClicked() {
+        drawerLayout.openDrawer(GravityCompat.START);
     }
 
     /**
