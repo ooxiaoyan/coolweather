@@ -56,6 +56,8 @@ public class WeatherActivity extends AppCompatActivity {
 
     @BindView(R.id.pm25_text) TextView pm25Text;
 
+    @BindView(R.id.quality_text) TextView qualityText;
+
     @BindView(R.id.comfort_text) TextView comfortText;
 
     @BindView(R.id.car_wash_text) TextView carWashText;
@@ -217,6 +219,7 @@ public class WeatherActivity extends AppCompatActivity {
         if (weather.aqi != null) {
             aqiText.setText(weather.aqi.city.aqi);
             pm25Text.setText(weather.aqi.city.pm25);
+            qualityText.setText(weather.aqi.city.quality);
         }
         String comfort = "舒适度：" + weather.suggestion.comfort.info;
         String carWash = "洗车指数：" + weather.suggestion.carWash.info;
