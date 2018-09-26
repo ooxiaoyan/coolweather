@@ -32,11 +32,12 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import icepick.State;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class WeatherActivity extends AppCompatActivity {
+public class WeatherActivity extends BaseActivity {
 
     @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
 
@@ -70,7 +71,7 @@ public class WeatherActivity extends AppCompatActivity {
 
     @BindView(R.id.swipe_refresh) SwipeRefreshLayout swipeRefresh;
 
-    private String mWeatherId;
+    @State String mWeatherId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
