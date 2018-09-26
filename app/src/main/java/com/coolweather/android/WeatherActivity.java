@@ -23,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.coolweather.android.gson.Forecast;
 import com.coolweather.android.gson.Weather;
 import com.coolweather.android.service.AutoUpdateService;
+import com.coolweather.android.util.DataSource;
 import com.coolweather.android.util.HttpUtil;
 import com.coolweather.android.util.Utility;
 
@@ -115,15 +116,14 @@ public class WeatherActivity extends AppCompatActivity {
         if (bingPic != null) {
             Glide.with(this).load(bingPic).into(bingPicImg);
         } else {
-            loadBingPic();
+            loadBingPic(DataSource.BING_PIC);
         }
     }
 
     /**
      * 加载必应的每日一图
      */
-    private void loadBingPic() {
-        String requestBingPic = "http://guolin.tech/api/bing_pic";
+    private void loadBingPic(String requestBingPic) {
         HttpUtil.sendOkHttpRequest(requestBingPic, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -152,7 +152,7 @@ public class WeatherActivity extends AppCompatActivity {
      * 根据天气id请求城市天气信息
      */
     public void requestWeather(final String weatherId) {
-        String weatherUrl = "http://guolin.tech/api/weather?cityid=" + weatherId + "&key=bc0418b57b2d4918819d3974ac1285d9";
+        String weatherUrl = DataSource.WEATHER + weatherId + "&key=" + DataSource.API_KEY;
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
@@ -187,7 +187,7 @@ public class WeatherActivity extends AppCompatActivity {
                 });
             }
         });
-        loadBingPic();
+        loadBingPic(DataSource.BING_PIC);
     }
 
     /**
