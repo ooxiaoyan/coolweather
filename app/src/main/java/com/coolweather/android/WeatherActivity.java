@@ -72,7 +72,7 @@ public class WeatherActivity extends BaseActivity {
 
     @BindView(R.id.swipe_refresh) SwipeRefreshLayout swipeRefresh;
 
-    @State String mWeatherId;
+    String mWeatherId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
