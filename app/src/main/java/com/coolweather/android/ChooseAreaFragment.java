@@ -18,8 +18,8 @@ import android.widget.Toast;
 import com.coolweather.android.db.City;
 import com.coolweather.android.db.County;
 import com.coolweather.android.db.Province;
+import com.coolweather.android.service.LocationService;
 import com.coolweather.android.util.DataSource;
-import com.coolweather.android.util.HttpUtil;
 import com.coolweather.android.util.Utility;
 
 import org.litepal.LitePal;
@@ -33,9 +33,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import butterknife.Unbinder;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Retrofit;
 
 public class ChooseAreaFragment extends Fragment {
 
@@ -142,7 +142,7 @@ public class ChooseAreaFragment extends Fragment {
             listView.setSelection(0);
             currentLevel = LEVEL_PROVINCE;
         } else {
-            queryFromServer(DataSource.CHINA_PROVINCE, "province");
+            queryFormServerByRetrofit(DataSource.PROTOCAL_AND_HOST, "province", -1, -1);//-1表示这个参数没有用到
         }
     }
 
@@ -163,8 +163,8 @@ public class ChooseAreaFragment extends Fragment {
             currentLevel = LEVEL_CITY;
         } else {
             int provinceCode = selectedProvince.getProvinceCode();
-            String address = DataSource.CHINA_PROVINCE + "/" + provinceCode;
-            queryFromServer(address, "city");
+            queryFormServerByRetrofit(DataSource.PROTOCAL_AND_HOST, "city", provinceCode, -1);
+
         }
     }
 
@@ -186,20 +186,43 @@ public class ChooseAreaFragment extends Fragment {
         } else {
             int provinceCode = selectedProvince.getProvinceCode();
             int cityCode = selectedCity.getCityCode();
-            String address = DataSource.CHINA_PROVINCE + "/" + provinceCode + "/" + cityCode;
-            queryFromServer(address, "county");
+            queryFormServerByRetrofit(DataSource.PROTOCAL_AND_HOST, "county", provinceCode, cityCode);
+
         }
     }
 
     /**
      * 根据传入的地址和类型从服务器上查询省市县的数据
      */
-    private void queryFromServer(String address, final String type) {
+    private void queryFormServerByRetrofit(String address, final String type, int provinceCode, int cityCode) {
+
         showProgressDialog();
-        HttpUtil.sendOkHttpRequest(address, new Callback() {
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(address)
+                .build();
+
+        LocationService service = retrofit.create(LocationService.class);
+
+        Call<ResponseBody> call;
+        if ("province".equals(type)) {
+            call = service.getProvinceList();
+        } else if ("city".equals(type)) {
+            call = service.getCityList(provinceCode);
+        } else if ("county".equals(type)) {
+            call = service.getCountyList(provinceCode, cityCode);
+        } else {
+            call = null;
+        }
+        call.enqueue(new retrofit2.Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String responseText = response.body().string();
+            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                String responseText = null;
+                try {
+                    responseText = response.body().string();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 boolean result = false;
                 if ("province".equals(type)) {
                     result = Utility.handleProvinceResponse(responseText);
@@ -226,8 +249,8 @@ public class ChooseAreaFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call call, IOException e) {
-                // 通过runOnUiThread()方法回到主线程处理逻辑
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                //通过runOnUiThread()方法回到主线程处理逻辑
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
