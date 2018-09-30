@@ -10,7 +10,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -33,10 +32,10 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import icepick.State;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import timber.log.Timber;
 
 public class WeatherActivity extends BaseActivity {
 
@@ -96,6 +95,7 @@ public class WeatherActivity extends BaseActivity {
             Weather weather = Utility.handleWeatherResponse(weatherString);
             mWeatherId = weather.basic.weatherId;
             showWeatherInfo(weather);
+            Timber.d("weatherString != null");
         } else {
             // 无缓存时去服务器查询天气
             mWeatherId = getIntent().getStringExtra("weather_id");
